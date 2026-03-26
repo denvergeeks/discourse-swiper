@@ -196,59 +196,7 @@ const extension = {
   plugins({
     pmState: { Plugin, NodeSelection, Selection, TextSelection, PluginKey },
     pmModel: { Fragment },
-    //pmView: { Decoration, DecorationSet },
   }) {
-    // Shows a placeholder when dragging an image over a swiper
-    // See selectClosestImageToCursor() in swiper-node-view.gjs
-    // With Discourse making the drop cursor more visible, it's less necessary.
-    /*const dropPlaceholderPlugin = new Plugin({
-      key: new PluginKey("swiper-drop-placeholder"),
-
-      state: {
-        init() {
-          return { decorations: DecorationSet.empty, dropPos: null };
-        },
-
-        apply(tr, state) {
-          const newDropPos = tr.getMeta("swiperDropPosition");
-          if (newDropPos === null) {
-            return { decorations: DecorationSet.empty, dropPos: null };
-          }
-          if (newDropPos !== undefined) {
-            const widget = Decoration.widget(
-              newDropPos,
-              () => {
-                const placeholder = document.createElement("div");
-                placeholder.className = "swiper-drop-placeholder-widget";
-                placeholder.contentEditable = "false";
-                return placeholder;
-              },
-              {
-                side: -1, // Appear before the position
-              }
-            );
-
-            return {
-              decorations: DecorationSet.create(tr.doc, [widget]),
-              dropPos: newDropPos,
-            };
-          }
-
-          return {
-            decorations: state.decorations.map(tr.mapping, tr.doc),
-            dropPos: state.dropPos,
-          };
-        },
-      },
-
-      props: {
-        decorations(state) {
-          return this.getState(state).decorations;
-        },
-      },
-    });
-    */
-
     const swiperPlugin = new Plugin({
       key: new PluginKey("swiper"),
 
