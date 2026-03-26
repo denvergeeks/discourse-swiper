@@ -340,24 +340,29 @@ const extension = {
               return true;
             }
           },
-          drop(view /*, event*/) {
-            view._swiperPM.movingImageToSwiper = null;
-          },
-        },
-        handleClickOn(view, _pos, node, nodePos) {
-          if (node.type.name === "swiper") {
-            // In edit mode, let PM handle clicks normally
-            if (node.attrs.mode === "edit") {
+          click(view, event) {
+            const swiperDOM = event.target.closest(".composer-swiper-node");
+            if (!swiperDOM) {
               return;
             }
 
-            // In view mode, select the whole node to show the toolbar
-            const tr = view.state.tr.setSelection(
-              NodeSelection.create(view.state.doc, nodePos)
-            );
-            view.dispatch(tr);
-            return true;
-          }
+            const { state, dispatch } = view;
+            const $pos = state.doc.resolve(view.posAtDOM(swiperDOM, 0));
+
+            for (let depth = $pos.depth; depth >= 0; depth--) {
+              const node = $pos.node(depth);
+              if (!(node.type.name === "swiper" && node.attrs.mode !== "edit")) {
+                continue;
+              }
+
+              dispatch(
+                state.tr.setSelection(
+                  NodeSelection.create(state.doc, $pos.before(depth))
+                )
+              );
+              view.focus();
+            }
+          },
         },
       },
       view(editorView) {

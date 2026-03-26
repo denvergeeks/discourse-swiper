@@ -393,19 +393,20 @@ export default class SwiperNodeView extends Component {
     const isTargetImage = target.tagName === "IMG";
     const insideContentDOM = this.contentDOM.contains(target);
 
-    // Swiper navigation/pagination clicks should not select the nodeview
+    // Lets swiper handles all events
+    // so that swiping, navigation, pagination, etc. work
+    // without PM interfering.
     if (
-      target.closest(".swiper-button-next") ||
-      target.closest(".swiper-button-prev") ||
-      target.closest(".swiper-pagination")
+      !this.isEditMode &&
+      !insideContentDOM &&
+      target.closest(".swiper-wrap")
     ) {
       return true;
     }
 
-    if (insideContentDOM) {
+    if (this.isEditMode && insideContentDOM) {
       // Grid layout breaks PM's click-to-position mapping in gaps between items.
-      // Handle clicks manually: find nearest position or fall back to end of content.
-      if (this.isEditMode && type === "mousedown" && !isTargetImage) {
+      if (type === "mousedown" && !isTargetImage) {
         const { view, getPos, node } = this.args;
         const { TextSelection } = view._swiperPM;
         const swiperPos = getPos();
