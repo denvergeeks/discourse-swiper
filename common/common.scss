@@ -165,7 +165,7 @@
     padding: var(--swiper-edit-top-offset) var(--space-2) var(--space-8)
       var(--space-2);
     min-height: var(--swiper-edit-min-height);
-    user-select: none;
+    caret-color: transparent;
     transition: all 0.3s;
 
     // PM's trailing <br> becomes a grid item, creating an extra row
@@ -261,15 +261,47 @@
       }
     }
 
-    .composer-swiper-nodeview,
-    .swiper-placeholder {
-      user-select: none;
+    > :not(.active-dragging) .composer-image-node {
+      &.has-caret-after,
+      &.has-caret-before {
+        --caret-width: 2px;
+        position: relative;
+      }
+
+      &.has-caret-after::after,
+      &.has-caret-before::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: var(--caret-width);
+        height: 100%;
+        background: var(--tertiary);
+        animation: swiper-caret-blink 1s step-end infinite;
+      }
+
+      &.has-caret-after::after {
+        right: calc((var(--space-2) / -2) - var(--caret-width) - 1px);
+      }
+
+      &.has-caret-before::before {
+        left: calc((var(--space-2) / -2) - var(--caret-width));
+      }
     }
 
-    .composer-swiper-nodeview > p:has(.composer-image-node) br,
-    .composer-swiper-nodeview > p:has(.composer-swiper-node) {
-      display: none !important;
-      user-select: none !important;
+    .swiper-caret-widget {
+      display: inline-block;
+      width: 2px;
+      height: var(--swiper-edit-image-size);
+      background: var(--tertiary);
+      animation: swiper-caret-blink 1s step-end infinite;
+      vertical-align: top;
+      pointer-events: none;
+    }
+
+    @keyframes swiper-caret-blink {
+      50% {
+        opacity: 0;
+      }
     }
   }
 }

@@ -494,14 +494,19 @@ export default class SwiperNodeView extends Component {
       if (type === "dragover") {
         if (this.reorderingImage || isExternalDrag) {
           this.contentDOM.classList.add("dragging-external");
+          this.contentDOM.classList.add("active-dragging");
 
           try {
             this.selectClosestImageToCursor(event);
-            /* eslint-disable-next-line */
-          } catch (error) {
+          } catch {
             this.lastSelectedImageForDrop = null;
-            // this.removeDropPlaceholder();
-            contentDOM.classList.remove("dragging-external");
+            this.contentDOM.classList.remove("dragging-external");
+          }
+
+          if (!this.externalDragSuppressed) {
+            this.externalDragSuppressed = true;
+            const { view } = this.args;
+            view.dispatch(view.state.tr.setMeta("swiperExternalDrag", true));
           }
 
           return true;
@@ -511,7 +516,8 @@ export default class SwiperNodeView extends Component {
       if (type === "drop") {
         this.lastSelectedImageForDrop = null;
         this.contentDOM.classList.remove("dragging-external");
-        contentDOM.classList.remove("dragging-external");
+        this.contentDOM.classList.remove("active-dragging");
+        this.clearExternalDragSuppression();
 
         if (this.reorderingImage) {
           event.preventDefault();
@@ -542,17 +548,29 @@ export default class SwiperNodeView extends Component {
           this.lastSelectedImageForDrop = null;
           this.contentDOM.classList.remove("dragging-external");
           this.contentDOM.classList.remove("active-dragging");
+          this.clearExternalDragSuppression();
         }
       }
 
       if (type === "dragend") {
+        this.reorderingImage = null;
         this.lastSelectedImageForDrop = null;
         this.contentDOM.classList.remove("dragging-external");
         this.contentDOM.classList.remove("active-dragging");
+        this.clearExternalDragSuppression();
       }
     }
 
     return false;
+  }
+
+  clearExternalDragSuppression() {
+    if (this.externalDragSuppressed) {
+      this.externalDragSuppressed = false;
+
+      const { view } = this.args;
+      view.dispatch(view.state.tr.setMeta("swiperExternalDrag", false));
+    }
   }
 
   handleImageDrop(
@@ -690,7 +708,6 @@ export default class SwiperNodeView extends Component {
     const { TextSelection } = view._swiperPM;
 
     try {
-      // Use TextSelection.near to find the nearest valid cursor position
       const $pos = tr.doc.resolve(dropPos);
       const selection = TextSelection.near($pos);
 

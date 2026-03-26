@@ -183,10 +183,29 @@ const extension = {
     },
   },
   plugins({
-    pmState: { Plugin, NodeSelection, Selection, TextSelection, PluginKey },
+    pmState: { Plugin, NodeSelection, TextSelection, PluginKey },
     pmModel: { Fragment },
     pmView: { Decoration, DecorationSet },
   }) {
+    const swiperCursorKey = new PluginKey("swiperCursor");
+
+    const CURSOR_IDLE = {
+      targetPos: null,
+      side: null,
+      mode: null,
+      isDragging: false,
+    };
+
+    function clearDragState(view) {
+      view.dom
+        .querySelectorAll(".composer-swiper-node > .active-dragging")
+        .forEach((element) => element.classList.remove("active-dragging"));
+
+      if (swiperCursorKey.getState(view.state)?.isDragging) {
+        view.dispatch(view.state.tr.setMeta("swiperExternalDrag", false));
+      }
+    }
+
     const swiperPlugin = new Plugin({
       key: new PluginKey("swiper"),
 
@@ -333,11 +352,14 @@ const extension = {
 
       props: {
         handleDOMEvents: {
-          // Track dragging images into swipers
-          dragstart(view, event) {
-            if (!event.target.closest(SWIPER_NODEVIEW_CLASS)) {
-              view._swiperPM.movingImageToSwiper = event.target;
-              return true;
+          drop(view) {
+            clearDragState(view);
+          },
+          dragleave(view, event) {
+            // stopEvent on the nodeview doesn't fire for events outside
+            // the nodeview's DOM.
+            if (!view.dom.contains(event.relatedTarget)) {
+              clearDragState(view);
             }
           },
           click(view, event) {
@@ -371,7 +393,6 @@ const extension = {
         editorView._swiperPM = {
           NodeSelection,
           TextSelection,
-          Selection,
         };
 
         return {
@@ -384,30 +405,138 @@ const extension = {
             const { from, to } = view.state.selection;
 
             view.state.doc.descendants((node, pos) => {
-              if (node.type.name === "swiper") {
-                const nodeStart = pos;
-                const nodeEnd = pos + node.nodeSize;
-                const isInside =
-                  (from >= nodeStart && from < nodeEnd) ||
-                  (to > nodeStart && to <= nodeEnd) ||
-                  (from < nodeStart && to > nodeEnd);
-
-                const nodeView = view.nodeDOM(pos);
-                if (nodeView) {
-                  if (isInside) {
-                    nodeView.classList.add("has-selection");
-                  } else {
-                    nodeView.classList.remove("has-selection");
-                  }
-                }
+              if (node.type.name !== "swiper") {
+                return;
               }
+
+              const nodeEnd = pos + node.nodeSize;
+              const isInside =
+                (from >= pos && from < nodeEnd) ||
+                (to > pos && to <= nodeEnd) ||
+                (from < pos && to > nodeEnd);
+
+              const nodeView = view.nodeDOM(pos);
+              if (nodeView) {
+                nodeView.classList.toggle("has-selection", isInside);
+              }
+
+              return false;
             });
           },
         };
       },
     });
 
-    return [/*dropPlaceholderPlugin*/ swiperPlugin];
+    const swiperCursorPlugin = new Plugin({
+      key: swiperCursorKey,
+
+      state: {
+        init() {
+          return CURSOR_IDLE;
+        },
+        apply(tr, prev, _oldState, newState) {
+          const dragMeta = tr.getMeta("swiperExternalDrag");
+          const isDragging =
+            dragMeta !== undefined ? dragMeta : prev.isDragging;
+
+          if (isDragging) {
+            return {
+              targetPos: null,
+              side: null,
+              mode: null,
+              isDragging: true,
+            };
+          }
+
+          const { selection } = newState;
+
+          if (!(selection instanceof TextSelection) || !selection.empty) {
+            return CURSOR_IDLE;
+          }
+
+          const $pos = selection.$from;
+
+          for (let depth = $pos.depth; depth >= 0; depth--) {
+            const node = $pos.node(depth);
+
+            if (node.type.name === "swiper") {
+              const parent = $pos.parent;
+              const index = $pos.index();
+
+              const hasImages = parent.content.content.some(
+                (child) => child.type.name === "image"
+              );
+
+              if (!hasImages) {
+                return { cursorPos: $pos.pos, mode: "empty" };
+              }
+
+              if (index > 0) {
+                return {
+                  targetPos: $pos.posAtIndex(index - 1, $pos.depth),
+                  side: "after",
+                  mode: "node",
+                };
+              }
+
+              if (index < parent.childCount) {
+                return {
+                  targetPos: $pos.posAtIndex(index, $pos.depth),
+                  side: "before",
+                  mode: "node",
+                };
+              }
+
+              return CURSOR_IDLE;
+            }
+          }
+
+          return CURSOR_IDLE;
+        },
+      },
+
+      props: {
+        decorations(state) {
+          const caret = swiperCursorKey.getState(state);
+
+          if (!caret?.mode) {
+            return null;
+          }
+
+          if (caret.mode === "empty") {
+            return DecorationSet.create(state.doc, [
+              Decoration.widget(
+                caret.cursorPos,
+                () => {
+                  const element = document.createElement("span");
+                  element.className = "swiper-caret-widget";
+                  return element;
+                },
+                { side: -1 }
+              ),
+            ]);
+          }
+
+          if (caret.targetPos == null || !caret.side) {
+            return null;
+          }
+
+          const node = state.doc.nodeAt(caret.targetPos);
+          if (!node) {
+            return null;
+          }
+
+          return DecorationSet.create(state.doc, [
+            Decoration.node(caret.targetPos, caret.targetPos + node.nodeSize, {
+              class:
+                caret.side === "after" ? "has-caret-after" : "has-caret-before",
+            }),
+          ]);
+        },
+      },
+    });
+
+    return [swiperPlugin, swiperCursorPlugin];
   },
 };
 
