@@ -14,9 +14,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--space-2);
-
     border-bottom: 1px solid var(--primary-low);
-
     cursor: move;
     user-select: none;
 
@@ -36,15 +34,11 @@
   .settings-categories-header {
     display: flex;
     justify-content: space-evenly;
-
     background: var(--primary-very-low);
     border-bottom: 2px solid var(--primary-low);
-
     overflow-x: auto;
     overflow-y: hidden;
-    scrollbar-width: thin;
     flex-wrap: nowrap;
-
     scroll-behavior: smooth;
     scrollbar-width: none;
 

@@ -303,15 +303,14 @@
 .swiper-button-prev {
   border-radius: 50%;
   transition: all 0.2s ease-in-out;
-
-  background: rgba(255, 255, 255, 0.4);
+  background: rgb(255, 255, 255, 0.4);
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgb(0, 0, 0, 0.1);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.45); /* Moins de transparence au hover */
-    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
+    background: rgb(255, 255, 255, 0.45); /* Moins de transparence au hover */
+    box-shadow: 0 10px 40px 0 rgb(0, 0, 0, 0.2);
     transform: scale(1.08);
   }
 
@@ -329,12 +328,12 @@
 }
 
 .swiper-button-next {
-  /*.swiper-navigation-outside--horizontal & {
+  /* .swiper-navigation-outside--horizontal & {
     margin-right: -4px;
   }
   .swiper-navigation-outside--vertical & {
     margin-bottom: -4px;
-  }*/
+  } */
 
   .arrow-icon {
     transform: rotate(45deg);
@@ -349,12 +348,12 @@
 }
 
 .swiper-button-prev {
-  /*.swiper-navigation-outside--horizontal & {
+  /* .swiper-navigation-outside--horizontal & {
     margin-left: -4px;
   }
   .swiper-navigation-outside--vertical & {
     margin-top: -4px;
-  }*/
+  } */
 
   .arrow-icon {
     transform: rotate(-135deg);
