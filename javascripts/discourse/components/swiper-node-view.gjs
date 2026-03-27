@@ -389,7 +389,6 @@ export default class SwiperNodeView extends Component {
 
   stopEvent(event) {
     const { type, target } = event;
-    const isExternalDrag = event.dataTransfer?.types.includes("Files");
     const isTargetImage = target.tagName === "IMG";
     const insideContentDOM = this.contentDOM.contains(target);
 
@@ -492,15 +491,15 @@ export default class SwiperNodeView extends Component {
       }
 
       if (type === "dragover") {
+        const isExternalDrag = event.dataTransfer?.types.includes("Files");
+
         if (this.reorderingImage || isExternalDrag) {
-          this.contentDOM.classList.add("dragging-external");
           this.contentDOM.classList.add("active-dragging");
 
           try {
             this.selectClosestImageToCursor(event);
           } catch {
             this.lastSelectedImageForDrop = null;
-            this.contentDOM.classList.remove("dragging-external");
           }
 
           if (!this.externalDragSuppressed) {
@@ -515,7 +514,6 @@ export default class SwiperNodeView extends Component {
 
       if (type === "drop") {
         this.lastSelectedImageForDrop = null;
-        this.contentDOM.classList.remove("dragging-external");
         this.contentDOM.classList.remove("active-dragging");
         this.clearExternalDragSuppression();
 
@@ -546,7 +544,6 @@ export default class SwiperNodeView extends Component {
       if (type === "dragleave") {
         if (!this.contentDOM.contains(event.relatedTarget)) {
           this.lastSelectedImageForDrop = null;
-          this.contentDOM.classList.remove("dragging-external");
           this.contentDOM.classList.remove("active-dragging");
           this.clearExternalDragSuppression();
         }
@@ -555,7 +552,6 @@ export default class SwiperNodeView extends Component {
       if (type === "dragend") {
         this.reorderingImage = null;
         this.lastSelectedImageForDrop = null;
-        this.contentDOM.classList.remove("dragging-external");
         this.contentDOM.classList.remove("active-dragging");
         this.clearExternalDragSuppression();
       }
