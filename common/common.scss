@@ -405,6 +405,8 @@
 }
 
 .fk-d-menu[data-identifier^="composer-swiper"] {
+  animation: none !important;
+
   button span {
     display: none;
   }
