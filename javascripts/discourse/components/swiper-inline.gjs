@@ -150,8 +150,8 @@ export default class SwiperInline extends Component {
         enabled: this.config.navigation.enabled,
         hideOnClick: this.config.navigation.hideOnClick,
         placement: this.config.navigation.placement,
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
+        nextEl: this.swiperWrapElement.querySelector(".swiper-button-next"),
+        prevEl: this.swiperWrapElement.querySelector(".swiper-button-prev"),
         addIcons: false,
       },
 
@@ -159,7 +159,7 @@ export default class SwiperInline extends Component {
         ? {
             clickable: this.config.pagination.clickabkle,
             type: this.config.pagination.type,
-            el: ".swiper-pagination",
+            el: this.swiperWrapElement.querySelector(".swiper-pagination"),
           }
         : false,
 
