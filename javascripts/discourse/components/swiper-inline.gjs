@@ -89,26 +89,6 @@ export default class SwiperInline extends Component {
       });
     }
 
-    /*this.nestedSliders = [];
-
-    this.swiperWrapElement.querySelectorAll(".nested-swiper").forEach((el) => {
-      this.nestedSliders.push(
-        new Swiper(el, {
-          spaceBetween: 50,
-          direction: "vertical",
-          autoHeight: true,
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        })
-      );
-    });*/
-
     const slideElement = this.swiperWrapElement.querySelector(".main-slider");
 
     this.mainSlider = new window.Swiper(slideElement, {
@@ -320,13 +300,6 @@ export default class SwiperInline extends Component {
                     "true"
                   }}
                 />
-                {{!-- testing caption. Disabled for now.
-                {{#if node.attrs.caption}}
-                  <div class="swiper-slide-content">
-                    {{node.attrs.caption}}
-                  </div>
-                {{/if}}
-                --}}
               </div>
             {{/each}}
           {{else}}
@@ -334,29 +307,6 @@ export default class SwiperInline extends Component {
               <div class="swiper-slide">
                 {{#if (eq data.type "image")}}
                   {{data.node}}
-
-                  {{!-- testing caption. Disabled for now.
-                  {{#if data.caption}}
-                    <div class="swiper-slide-content">
-                      {{htmlSafe data.caption}}
-                    </div>
-                  {{/if}}
-                --}}
-                  {{!-- testing nested swiper. Disabled for now
-                  {{else if (eq data.type "nested")}}
-                    <div class="swiper nested-swiper swiper-v">
-                      <div class="swiper-wrapper">
-                        {{#each data.items as |item|}}
-                          <div class="swiper-slide">
-                            <div class="super-flow-image">{{item.node}}</div>
-                          </div>
-                        {{/each}}
-                      </div>
-                      <div class="swiper-pagination"></div>
-                      <div class="swiper-button-next"></div>
-                      <div class="swiper-button-prev"></div>
-                    </div>
-                --}}
                 {{/if}}
               </div>
             {{/each}}
