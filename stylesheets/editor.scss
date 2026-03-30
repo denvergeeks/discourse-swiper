@@ -3,7 +3,7 @@
   white-space: normal;
 
   // Hides contentDOM in preview mode
-  &:not(.edit) > div > p {
+  &:not(.edit) > .composer-swiper-node__content > p {
     display: none;
   }
 
@@ -16,7 +16,7 @@
     outline: 2px dashed var(--primary-medium);
     border-radius: var(--d-border-radius);
 
-    > div > p {
+    > .composer-swiper-node__content > p {
       display: grid;
       grid-template-columns: repeat(
         auto-fill,
@@ -78,7 +78,7 @@
     }
 
     // Caret indicators between images during drag/navigation
-    > :not(.active-dragging) .composer-image-node {
+    > .composer-swiper-node__content:not(.active-dragging) .composer-image-node {
       &.has-caret-after,
       &.has-caret-before {
         --caret-width: 2px;

@@ -115,6 +115,8 @@ export default class SwiperNodeView extends Component {
 
     this.menuIndex = ++menuIndex;
     this.args.onSetup?.(this);
+
+    this.contentDOM.classList.add("composer-swiper-node__content");
   }
 
   willDestroy() {
