@@ -120,6 +120,10 @@
         outline: none;
       }
 
+      &.swiper-button-disabled {
+        opacity: 0.35;
+      }
+
       svg {
         width: var(--swiper-arrow-size);
         height: var(--swiper-arrow-size);
@@ -163,5 +167,3 @@
     }
   }
 }
-
-
