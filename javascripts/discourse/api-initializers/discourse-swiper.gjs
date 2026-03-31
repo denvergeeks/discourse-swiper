@@ -19,9 +19,16 @@ function initializeSwiper(api) {
       container.dataset[camelize(key)] = value;
     }
 
+    const config = parseWrapParam({ ...element.dataset });
+    
+    // Parse topics parameter
+    if (element.dataset.topics) {
+      config.topics = element.dataset.topics.split(',').map(id => id.trim());
+    }
+
     helper.renderGlimmer(container, SwiperInline, {
       preview: isPreview,
-      config: parseWrapParam({ ...element.dataset }),
+            config: config,
       parsedData: MediaElementParser.run(element),
     });
 
