@@ -75,6 +75,11 @@ export default class SwiperInline extends Component {
     await this.loadSwiper();
     await this.loadTopicSlides();
 
+    // Guard: component may have been destroyed during async operations
+    if (!this.swiperWrapElement) {
+      return;
+    }
+
     if (this.config.thumbs.enabled) {
       this.thumbSlider = new window.Swiper(
         this.swiperWrapElement.querySelector(".slider-thumb"),
