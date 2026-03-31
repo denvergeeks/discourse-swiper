@@ -70,6 +70,10 @@
         [data-identifier="composer-image-alt-text"] {
           min-width: auto;
         }
+
+        button span[aria-hidden="true"] {
+          display: none;
+        }
       }
     }
 
