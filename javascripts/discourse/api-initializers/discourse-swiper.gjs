@@ -42,7 +42,9 @@ function initializeSwiper(api) {
 
   api.registerRichEditorExtension(swiperExtension);
 
-  window.I18n.translations[window.I18n.locale].js.composer.swiper_sample = "";
+  window.I18n.translations[
+    window.I18n.fallbackLocale || "en"
+  ].js.composer.swiper_sample = "";
 
   api.addComposerToolbarPopupMenuOption({
     icon: "images",
