@@ -1,5 +1,5 @@
 import Component from "@glimmer/component";
-import { cached } from "@glimmer/tracking";
+import { cached } from "@glimmer/tracking", tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
@@ -12,15 +12,48 @@ import lightbox from "discourse/lib/lightbox";
 import loadScript from "discourse/lib/load-script";
 import { deepMerge } from "discourse/lib/object";
 import { escapeExpression } from "discourse/lib/utilities";
+import { ajax } from "discourse/lib/ajax";
 import { DEFAULT_SETTINGS } from "../lib/constants";
 import { normalizeSettings } from "../lib/utils";
 
 export default class SwiperInline extends Component {
   @service siteSettings;
+  @tracked topicSlides = [];
   @service activeSwiperInEditor;
 
   async loadSwiper() {
     await loadScript(settings.theme_uploads_local.swiper_js);
+  }
+
+  async loadTopicSlides() {
+    const topicIds = this.args.data?.config?.topics || this.args.node?.config?.topics;
+    
+    if (!topicIds || !topicIds.length) {
+      return;
+    }
+
+    const slides = [];
+    
+    for (const topicId of topicIds) {
+      try {
+        const response = await ajax(`/t/${topicId}.json`);
+        const post = response.post_stream?.posts?.[0];
+        
+        if (post && post.cooked) {
+          slides.push({
+            type: "topic-cooked",
+            topicId: topicId,
+            topicTitle: response.title,
+            cooked: post.cooked,
+            topicSlug: response.slug,
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to load topic ${topicId}:`, error);
+      }
+    }
+    
+    this.topicSlides = slides;
   }
 
   @action
@@ -40,6 +73,7 @@ export default class SwiperInline extends Component {
     this.swiperWrapElement = element;
 
     await this.loadSwiper();
+    await this.loadTopicSlides();
 
     if (this.config.thumbs.enabled) {
       this.thumbSlider = new window.Swiper(
@@ -302,6 +336,21 @@ export default class SwiperInline extends Component {
                 />
               </div>
             {{/each}}
+
+          {{#each this.topicSlides as |topic|}}
+            <div class="swiper-slide topic-cooked-slide" data-topic-id={{topic.topicId}}>
+              <div class="topic-cooked-content">
+                <h3 class="topic-cooked-title">
+                  <a href="/t/{{topic.topicSlug}}/{{topic.topicId}}" target="_blank">
+                    {{topic.topicTitle}}
+                  </a>
+                </h3>
+                <div class="topic-cooked-body">
+                  {{htmlSafe topic.cooked}}
+                </div>
+              </div>
+            </div>
+          {{/each}}
           {{else}}
             {{#each @data.parsedData as |data|}}
               <div class="swiper-slide">
