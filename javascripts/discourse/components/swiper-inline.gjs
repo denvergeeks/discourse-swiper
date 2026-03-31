@@ -318,12 +318,12 @@ export default class SwiperInline extends Component {
         }}
           <div class="swiper-button-next" contenteditable="false">
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M5.5 2.75 10.75 8 5.5 13.25"></path>
+              <path d="M5.375 2.75 10.625 8 5.375 13.25"></path>
             </svg>
           </div>
           <div class="swiper-button-prev" contenteditable="false">
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M10.5 2.75 5.25 8l5.25 5.25"></path>
+              <path d="M10.625 2.75 5.375 8 10.625 13.25"></path>
             </svg>
           </div>
         {{/if}}
@@ -345,12 +345,12 @@ export default class SwiperInline extends Component {
       }}
         <div class="swiper-button-next" contenteditable="false">
           <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            <path d="M5.5 2.75 10.75 8 5.5 13.25"></path>
+            <path d="M5.375 2.75 10.625 8 5.375 13.25"></path>
           </svg>
         </div>
         <div class="swiper-button-prev" contenteditable="false">
           <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            <path d="M10.5 2.75 5.25 8l5.25 5.25"></path>
+            <path d="M10.625 2.75 5.375 8 10.625 13.25"></path>
           </svg>
         </div>
       {{/if}}
