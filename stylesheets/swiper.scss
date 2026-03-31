@@ -897,3 +897,78 @@
     transform-origin: center bottom;
   }
 }
+
+// Topic cooked content slides
+.topic-cooked-slide {
+  .topic-cooked-content {
+    padding: 2rem;
+    height: 100%;
+    overflow-y: auto;
+    background: var(--secondary);
+    box-sizing: border-box;
+  }
+
+  .topic-cooked-title {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5em;
+    border-bottom: 2px solid var(--primary-low);
+    padding-bottom: 0.5rem;
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--tertiary);
+      }
+    }
+  }
+
+  .topic-cooked-body {
+    font-size: 1em;
+    line-height: 1.6;
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    // Ensure proper spacing for various elements
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    ul, ol {
+      padding-left: 2em;
+    }
+
+    blockquote {
+      margin: 1em 0;
+      padding-left: 1em;
+      border-left: 3px solid var(--primary-low);
+    }
+
+    pre {
+      overflow-x: auto;
+    }
+
+    code {
+      background: var(--primary-very-low);
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+    }
+  }
+}
