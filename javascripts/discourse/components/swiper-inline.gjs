@@ -1,5 +1,5 @@
 import Component from "@glimmer/component";
-import { cached } from "@glimmer/tracking", tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
